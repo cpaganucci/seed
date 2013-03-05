@@ -2,43 +2,52 @@ $(function ()
 {
     var canvas = $("#mainCanvas"),
         canvasElement = canvas[0],
-        graphics,
         graphicsHelper,
-        turtle = new Turtle( canvasElement.getContext( "2d" ) ),
-        points = []
+        context = canvasElement.getContext( "2d" )
         ;
 
-    $( canvas ).click( function(e) {
-       addPoint( e.pageX, e.pageY );
-    });
-
     graphicsHelper = new GraphicsHelper();
-    graphics = new Graphics( canvasElement, "source-over" );
-    graphics.reset();
 
-    points.push( graphics.point( 0, 0 ) );
-    points.push( graphics.point( 100, 0 ) );
-    points.push( graphics.point( 100, 100 ) );
-    points.push( graphics.point( 0, 100 ) );
-    points.push( graphics.point( 0, 0 ) );
+    context.lineWidth = 1;
 
-    var line = graphics.poly( points );
-    var c1 = graphicsHelper.rgba( 255, 0, 0, 1 );
-    var c2 = graphicsHelper.rgba( 0, 255, 0, 1 );
-    graphics.addLine( line, 1, c1, c2, false );
+    context.translate( 300, 600 );
+    context.rotate( Math.PI );
 
-    graphics.graphics.translate( 300, 300 );
+    context.beginPath();
+    color( 255, 255, 0 );
+    line( 300 );
 
-    for( var i=0; i<16; i++ )
+    context.beginPath();
+    color( 0, 255, 0 );
+    for( var i=0; i<8; i++ )
     {
-        graphics.draw();
-
-        turtle.right( Math.PI / 8 );
+        square( 100 );
+        context.rotate( Math.PI / 16 );
     }
-    
-    function addPoint( x, y )
+
+    function color( r, g, b )
     {
-        graphics.lineList[0].points.push( {x:x,y:y} );
-        graphics.draw();
+        var strokeColor = { r:r, g:g, b:b, a:1 };
+        context.strokeStyle = graphicsHelper.getColorString( strokeColor );
+    }
+
+    function line( length )
+    {
+        context.moveTo( 0, 0 );
+        context.lineTo( 0, length );
+        context.translate( 0, length );
+        context.stroke();
+    }
+
+    function square( size )
+    {
+        context.save();
+        context.translate( -size/2, -size/2 );
+        for( var i=0; i<4; i++ )
+        {
+            line( size );
+            context.rotate( -Math.PI / 2 );
+        }
+        context.restore();
     }
 });
