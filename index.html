@@ -7,35 +7,8 @@
 		<script type="text/javascript" src="js/requestAnimFrame.js"></script>
 		<script type="text/javascript" src="js/graphicsHelper.js"></script>
 		<script type="text/javascript" src="js/graphics.js"></script>
-		
-		<script type="text/javascript">
-
-		$(function () {
-			var canvas = $("#mainCanvas")[0],
-				graphics,
-				graphicsHelper
-			;
-			
-			graphicsHelper = new GraphicsHelper();
-			graphics = new Graphics( canvas, "source-over" );
-			graphics.reset();
-
-			var pts = [];
-			pts.push( graphics.point( 0.1, 0.1 ) );
-			pts.push( graphics.point( 0.3, 0.2 ) );
-			pts.push( graphics.point( 0.5, 0.5 ) );
-			pts.push( graphics.point( 0.7, 0.8 ) );
-			pts.push( graphics.point( 0.9, 0.9 ) );
-			
-			var line = graphics.poly( pts );
-			var c1 = graphicsHelper.rgba( 255, 0, 0, 1 );
-			var c2 = graphicsHelper.rgba( 0, 255, 0, 1 );
-			graphics.addLine( line, 0.00167, c1, c2, false );
-			
-			graphics.draw();
-		});
-
-		</script>
+        <script type="text/javascript" src="js/turtle.js"></script>
+		<script type="text/javascript" src="js/seedApp.js"></script>
 	</head>
 	
 	<body>

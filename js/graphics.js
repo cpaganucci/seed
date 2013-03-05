@@ -18,6 +18,16 @@ function Graphics( canvas, compositeType )
     //this.graphics.globalCompositeOperation = compositeType;
 }
 
+Graphics.prototype.clear = function () {
+    //this.graphics.setTransform(this.graphics.canvas.width, 0, 0, this.graphics.canvas.height, 0, 0);
+    if (this.bgColor) {
+        this.graphics.fillStyle = this.graphicsHelper.getColorString(this.graphicsHelper.hsva2rgba(this.bgColor.h, this.bgColor.s, this.bgColor.v, 0.5));
+        this.graphics.fillRect(0, 0, this.graphics.canvas.width, this.graphics.canvas.height);
+    } else {
+        this.graphics.clearRect(0, 0, 1, 1);
+    }
+};
+
 Graphics.prototype.reset = function()
 {
     this.shapeList = [];
@@ -281,6 +291,7 @@ Graphics.prototype.copyCircle = function( circle )
     return newShape;
 };
 
+
 Graphics.prototype.interpolateShape = function (shape1, shape2, percent) {
     var newShape = {};
     newShape.type = shape1.type;
@@ -320,7 +331,6 @@ Graphics.prototype.interpolateShape = function (shape1, shape2, percent) {
 
     return newShape;
 };
-
 
 Graphics.prototype.interpolatePoly = function( poly1, poly2, percent )
 {
@@ -388,7 +398,7 @@ Graphics.prototype.addLine = function (line, width, color1, color2, hasDropShado
     return line;
 };
 
-Graphics.prototype.addPoint = function (transform, color) 
+Graphics.prototype.addPoint = function (transform, color)
 {
     var shape = this.circle(1);
     shape.transform = transform;
@@ -416,18 +426,8 @@ Graphics.prototype.showDropShadow = function (show)
 
 };
 
-Graphics.prototype.clear = function () {
-    this.graphics.setTransform(this.graphics.canvas.width, 0, 0, this.graphics.canvas.height, 0, 0);
-    if (this.bgColor) {
-        this.graphics.fillStyle = this.graphicsHelper.getColorString(this.graphicsHelper.hsva2rgba(this.bgColor.h, this.bgColor.s, this.bgColor.v, 0.5));
-        this.graphics.fillRect(0, 0, this.graphics.canvas.width, this.graphics.canvas.height);
-    } else {
-        this.graphics.clearRect(0, 0, 1, 1);
-    }
-};
-
 Graphics.prototype.draw = function () {
-    this.clear();
+    //this.clear();
 
     this.graphics.globalCompositeOperation = this.compositeType;
 
