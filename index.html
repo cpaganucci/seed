@@ -2,16 +2,47 @@
 <html>
 	<head>
 		<title>seed</title>
+
+        <link rel="stylesheet" href="css/main.css">
 		
 		<script type="application/javascript" src="js/jquery-1.9.1.min.js"></script>
 		<script type="text/javascript" src="js/requestAnimFrame.js"></script>
-		<script type="text/javascript" src="js/graphicsHelper.js"></script>
+        <script type="text/javascript" src="js/tween.js"></script>
+        <script type="text/javascript" src="js/graphicsHelper.js"></script>
 		<script type="text/javascript" src="js/graphics.js"></script>
-        <script type="text/javascript" src="js/turtle.js"></script>
+        <script type="text/javascript" src="js/seed.js"></script>
 		<script type="text/javascript" src="js/seedApp.js"></script>
+
+        <script type="text/javascript">
+        $(function ()
+        {
+            var canvas = $("#mainCanvas");
+            var seedApp = new SeedApp( canvas );
+            seedApp.startRender();
+
+            $(document).keypress( function(e) {
+               seedApp.keyPress( e );
+            });
+
+            canvas.mousedown( function(e){
+                var downPoint = { x:e.pageX - canvas.offset().left, y:e.pageY - canvas.offset().top };
+                seedApp.mouseDown( downPoint );
+            });
+
+            canvas.mousemove( function(e){
+                var pt = { x:e.pageX - canvas.offset().left, y:e.pageY - canvas.offset().top };
+                seedApp.mouseMove( pt );
+            });
+
+            canvas.mouseup( function(e){
+                var upPoint = { x:e.pageX - canvas.offset().left, y:e.pageY - canvas.offset().top };
+                seedApp.mouseUp( upPoint );
+            });
+        });
+        </script>
 	</head>
 	
 	<body>
-		<canvas id="mainCanvas" width="600" height="600"></canvas>
+		<canvas id="mainCanvas"></canvas>
 	</body>
 </html>	

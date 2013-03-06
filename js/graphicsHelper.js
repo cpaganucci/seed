@@ -7,6 +7,14 @@ GraphicsHelper.prototype.randInt = function( min, max )
     return Math.round( min + ( Math.random() * ( max - min ) ) );
 };
 
+GraphicsHelper.prototype.randColor = function()
+{
+    var r = this.randInt( 0, 255 );
+    var g = this.randInt( 0, 255 );
+    var b = this.randInt( 0, 255 );
+    return this.getColorString( this.rgba( r, g, b, 1 ) );
+};
+
 GraphicsHelper.prototype.createTransform = function( tx, ty, scaleX, scaleY, rotation )
 {
     var transform = {};

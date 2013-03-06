@@ -1,53 +1,102 @@
-$(function ()
+function SeedApp( canvas )
 {
-    var canvas = $("#mainCanvas"),
-        canvasElement = canvas[0],
-        graphicsHelper,
-        context = canvasElement.getContext( "2d" )
-        ;
+    this.canvas = canvas;
+    this.graphics = new Graphics( canvas[0].getContext( "2d") );
+    this.downPoint = { x:0, y:0 };
+    this.dragLength = 0;
+    this.dragAngle = 0;
+    this.dragging = false;
+    this.seeds = [];
+    
+    this.canvas.attr( "width", $(window).width() );
+    this.canvas.attr( "height", $(window).height() );
+}
 
-    graphicsHelper = new GraphicsHelper();
-
-    context.lineWidth = 1;
-
-    context.translate( 300, 600 );
-    context.rotate( Math.PI );
-
-    context.beginPath();
-    color( 255, 255, 0 );
-    line( 300 );
-
-    context.beginPath();
-    color( 0, 255, 0 );
-    for( var i=0; i<8; i++ )
+SeedApp.prototype.keyPress = function( e )
+{
+    var c = String.fromCharCode( e.which );
+    switch( c )
     {
-        square( 100 );
-        context.rotate( Math.PI / 16 );
+        case " ":
+            this.seeds = [];
+            break;
     }
+};
 
-    function color( r, g, b )
-    {
-        var strokeColor = { r:r, g:g, b:b, a:1 };
-        context.strokeStyle = graphicsHelper.getColorString( strokeColor );
-    }
+SeedApp.prototype.mouseDown = function( pos )
+{
+    this.downPoint = pos;
+    this.dragAngle = 0;
+    this.dragLength = 0;
+    this.dragging = true;
+};
 
-    function line( length )
+SeedApp.prototype.mouseMove = function( pos )
+{
+    if( this.dragging )
     {
-        context.moveTo( 0, 0 );
-        context.lineTo( 0, length );
-        context.translate( 0, length );
-        context.stroke();
-    }
+        this.graphics.clear();
 
-    function square( size )
-    {
-        context.save();
-        context.translate( -size/2, -size/2 );
-        for( var i=0; i<4; i++ )
+        var x = pos.x - this.downPoint.x;
+        var y = pos.y - this.downPoint.y;
+        var hyp = Math.sqrt( x*x + y*y );
+        var angle = Math.acos( x / hyp );
+        if( y < 0 )
         {
-            line( size );
-            context.rotate( -Math.PI / 2 );
+            angle += Math.PI/2;
+            angle *= -1;
         }
-        context.restore();
+        else
+        {
+            angle -= Math.PI/2;
+        }
+
+        this.dragLength = hyp;
+        this.dragAngle = angle;
     }
-});
+};
+
+SeedApp.prototype.mouseUp = function( pos )
+{
+    this.dragging = false;
+
+    var seed = new Seed( this.graphics );
+    seed.position = this.downPoint;
+    seed.rotation = this.dragAngle;
+    seed.size = this.dragLength;
+    this.seeds.push( seed );
+};
+
+SeedApp.prototype.draw = function()
+{
+    this.graphics.clear();
+
+    for( var i=0; i<this.seeds.length; i++ )
+    {
+        this.seeds[i].draw();
+    }
+
+    //draw cursor
+    if( this.dragging )
+    {
+        this.graphics.home();
+        this.graphics.translate( this.downPoint.x, this.downPoint.y );
+        this.graphics.circle( 10, "#000000" );
+        this.graphics.rotate( this.dragAngle );
+        this.graphics.line( this.dragLength, "#000000" );
+    }
+};
+
+SeedApp.prototype.startRender = function()
+{
+    this.renderLoop( this );
+};
+
+SeedApp.prototype.renderLoop = function( self )
+{
+    TWEEN.update();
+
+    this.draw();
+
+    requestAnimationFrame( function() { self.renderLoop( self ) }  );
+};
