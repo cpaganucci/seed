@@ -8,7 +8,7 @@ function Graphics( context )
 Graphics.prototype.clear = function()
 {
     this.home();
-    this.context.fillStyle = "#ffffff";
+    this.context.fillStyle = "#333344";
     this.context.fillRect(0, 0, this.context.canvas.width, this.context.canvas.height);
 };
 
