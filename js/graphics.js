@@ -37,6 +37,7 @@ Graphics.prototype.line = function( length, color )
 {
     this.context.beginPath();
     this.context.strokeStyle = color;
+    this.context.lineWidth = length * 0.05;
     this.context.moveTo( 0, 0 );
     this.context.lineTo( 0, length );
     this.context.translate( 0, length );

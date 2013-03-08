@@ -6,6 +6,9 @@ function Seed( graphics )
     this.size = 0;
     this.color = graphics.graphicsHelper.randColor();
     this.depth = 5;
+    this.branch = {};
+    this.leafSize = 15;
+    this.leafColor = graphics.graphicsHelper.randColor();
 }
 
 //Seed.prototype.draw = function()
@@ -23,26 +26,16 @@ function Seed( graphics )
 //    }
 //};
 
+Seed.prototype.grow = function()
+{
+    this.branch = new Branch( this, this.size, 0, 0 );
+};
+
 Seed.prototype.draw = function()
 {
     this.graphics.home();
     this.graphics.translate( this.position.x, this.position.y );
     this.graphics.rotate( this.rotation );
 
-    this.drawBranch( this.size, 0, 0 );
-};
-
-Seed.prototype.drawBranch = function( size, angle, curDepth )
-{
-    if( curDepth > this.depth )
-        return;
-
-    this.graphics.context.save();
-    this.graphics.rotate( angle );
-    this.graphics.line( size, this.color );
-    var rand = 0;//( Math.random() * 2 - 1 ) * 2;
-    this.drawBranch( size/2, Math.PI/4 + rand, curDepth+1 );
-    rand = 0;//( Math.random() * 2 - 1 ) * 2;
-    this.drawBranch( size/2, -Math.PI/4 + rand, curDepth+1 );
-    this.graphics.context.restore();
+    this.branch.draw();
 };
