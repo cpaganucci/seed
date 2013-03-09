@@ -65,7 +65,7 @@ SeedApp.prototype.mouseUp = function( pos )
     seed.position = this.downPoint;
     seed.rotation = this.dragAngle;
     seed.size = this.dragLength;
-    seed.trunkWidth = 20;
+    seed.trunkWidth = seed.size * 0.05;
     seed.leafSize = 20;
     seed.grow();
     this.seeds.push( seed );
