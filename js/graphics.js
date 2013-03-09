@@ -33,33 +33,34 @@ Graphics.prototype.rotate = function( angle )
 //        context.strokeStyle = graphicsHelper.getColorString( strokeColor );
 //    }
 
-Graphics.prototype.line = function( length, color )
+Graphics.prototype.line = function( length, width, color )
 {
     this.context.beginPath();
     this.context.strokeStyle = color;
-    this.context.lineWidth = length * 0.05;
+    this.context.lineWidth = width;
     this.context.moveTo( 0, 0 );
     this.context.lineTo( 0, length );
     this.context.translate( 0, length );
     this.context.stroke();
 };
 
-Graphics.prototype.square = function( size, color )
+Graphics.prototype.square = function( size, width, color )
 {
     this.context.save();
     this.context.translate( -size/2, -size/2 );
     for( var i=0; i<4; i++ )
     {
-        this.line( size, color );
+        this.line( size, width, color );
         this.context.rotate( -Math.PI / 2 );
     }
     this.context.restore();
 };
 
-Graphics.prototype.circle = function( radius, color )
+Graphics.prototype.circle = function( radius, width, color )
 {
     this.context.beginPath();
     this.context.strokeStyle = color;
+    this.context.strokeWidth = width;
     this.context.arc( 0, 0, radius, 0, Math.PI*2, false );
     this.context.stroke();
 };

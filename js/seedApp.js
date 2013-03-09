@@ -61,9 +61,12 @@ SeedApp.prototype.mouseUp = function( pos )
     this.dragging = false;
 
     var seed = new Seed( this.graphics );
+    seed.depth = 6;
     seed.position = this.downPoint;
     seed.rotation = this.dragAngle;
     seed.size = this.dragLength;
+    seed.trunkWidth = 20;
+    seed.leafSize = 20;
     seed.grow();
     this.seeds.push( seed );
 };
