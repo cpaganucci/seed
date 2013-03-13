@@ -3,20 +3,25 @@ function Branch( seed, size, width, angle, curDepth )
     this.seed = seed;
     this.graphics = seed.graphics;
     this.angle = angle;
+    this.curDepth = curDepth;
     this.size = size;
-    this.width = width;
+    this.startWidth = width;
+    this.endWidth = width;
     this.branches = [];
     this.leaf = {};
+}
 
-    var rand, newSize, newWidth, newAngle;
+Branch.prototype.grow = function()
+{
+    var rand, newBranch, newSize, newAngle;
 
-    if( curDepth > this.seed.depth )
+    if( this.curDepth > this.seed.depth )
         return;
 
-    if( curDepth < this.seed.depth-1 )
+    if( this.curDepth < this.seed.depth-1 )
     {
-         var startingAngle = angle;
-        if( angle == 0 )
+         var startingAngle = this.angle;
+        if( this.angle == 0 )
         {
             startingAngle = Math.PI/6;
             if( Math.random() < 0.5 )
@@ -30,10 +35,12 @@ function Branch( seed, size, width, angle, curDepth )
             {
                 rand = ( Math.random() * 2 - 1 ) * .7;
                 newAngle = startingAngle + rand;
-                rand = ( Math.random() * 2 - 1 ) * .5;
-                newSize = size * 0.6 + rand - ( 0.05 * curDepth );
-                newWidth = newSize * width / size;
-                this.branches.push( new Branch( this.seed, newSize, newWidth, newAngle, curDepth+1 ) );
+                rand = ( Math.random() * 2 - 1 ) * 1;
+                newSize = this.size * 0.6 + rand - ( 0.05 * this.curDepth );
+                this.endWidth = newSize * this.startWidth / this.size;
+                newBranch = new Branch( this.seed, newSize, this.endWidth, newAngle, this.curDepth+1 );
+                newBranch.grow();
+                this.branches.push( newBranch );
 
                 prob -= 0.4;
             }
@@ -42,19 +49,21 @@ function Branch( seed, size, width, angle, curDepth )
         }
     }
 
-    if( curDepth < this.seed.depth )
+    if( this.curDepth < this.seed.depth )
     {
         rand = ( Math.random() * 2 - 1 ) * .3;
-        newSize = size * 0.5 + rand;
-        newWidth = newSize * width / size;
-        this.branches.push( new Branch( this.seed, newSize, newWidth,  0, curDepth+1 ) );
+        newSize = this.size * 0.5 + rand;
+        this.endWidth = newSize * this.startWidth / this.size;
+        newBranch = new Branch( this.seed, newSize, this.endWidth,  0, this.curDepth+1 );
+        newBranch.grow();
+        this.branches.push( newBranch );
     }
 
-    if( curDepth == this.seed.depth )
+    if( this.curDepth == this.seed.depth )
     {
-        this.leaf = new Leaf( seed, angle );
+        this.leaf = new Leaf( this.seed, this.angle );
     }
-}
+};
 
 Branch.prototype.draw = function()
 {
@@ -62,7 +71,11 @@ Branch.prototype.draw = function()
     {
         this.graphics.context.save();
         this.graphics.rotate( this.angle );
-        this.graphics.line( this.size, this.width, this.seed.color );
+   //     this.graphics.line( this.size * this.seed.sizeFactor, this.startWidth * this.seed.widthFactor * this.seed.sizeFactor, this.seed.color );
+        this.graphics.taperedLine( this.size * this.seed.sizeFactor,
+                                   this.startWidth * this.seed.widthFactor * this.seed.sizeFactor,
+                                   this.endWidth * this.seed.widthFactor * this.seed.sizeFactor,
+                                   this.seed.color );
         for( var i=0; i<this.branches.length; i++ )
         {
             this.branches[i].draw();

@@ -7,6 +7,8 @@ function SeedApp( canvas )
     this.dragAngle = 0;
     this.dragging = false;
     this.seeds = [];
+
+    this.gui = new dat.GUI();
     
     this.canvas.attr( "width", $(window).width() );
     this.canvas.attr( "height", $(window).height() );
@@ -18,6 +20,8 @@ SeedApp.prototype.keyPress = function( e )
     switch( c )
     {
         case " ":
+            this.gui.destroy();
+            this.gui = new dat.GUI();
             this.seeds = [];
             break;
     }
@@ -58,17 +62,36 @@ SeedApp.prototype.mouseMove = function( pos )
 
 SeedApp.prototype.mouseUp = function( pos )
 {
-    this.dragging = false;
+    if( this.dragging )
+    {
+        this.dragging = false;
 
-    var seed = new Seed( this.graphics );
-    seed.depth = 6;
-    seed.position = this.downPoint;
-    seed.rotation = this.dragAngle;
-    seed.size = this.dragLength;
-    seed.trunkWidth = seed.size * 0.05;
-    seed.leafSize = 20;
-    seed.grow();
-    this.seeds.push( seed );
+        var seed = new Seed( this.graphics );
+        seed.depth = 8;
+        seed.position = this.downPoint;
+        seed.rotation = this.dragAngle;
+        seed.size = this.dragLength;
+        seed.trunkWidth = seed.size * 0.05;
+        seed.leafSize = 2;
+        seed.color = this.graphics.graphicsHelper.randColor();
+        seed.leafColor = this.graphics.graphicsHelper.randColor();
+        seed.grow();
+
+        var f1 = this.gui.addFolder( 'Seed ' + (this.seeds.length+1) );
+        var depthController = f1.add( seed, 'depth', 0, 10 ).step( 1 );
+        depthController.onFinishChange( function(value)
+        {
+           seed.grow();
+        });
+        f1.add( seed, 'sizeFactor').step( 0.01 );
+        f1.add( seed, 'widthFactor', 0 ).step( 0.01 );
+        f1.addColor( seed, 'color' );
+        f1.addColor( seed, 'leafColor' );
+        f1.add( seed, 'leafSize' );
+        f1.open();
+
+        this.seeds.push( seed );
+    }
 };
 
 SeedApp.prototype.draw = function()

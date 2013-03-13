@@ -44,6 +44,23 @@ Graphics.prototype.line = function( length, width, color )
     this.context.stroke();
 };
 
+Graphics.prototype.taperedLine = function( length, startWidth, endWidth, color )
+{
+    this.context.beginPath();
+    //this.context.strokeStyle = color;
+    this.context.fillStyle = color;
+    //this.context.lineWidth = 1;
+    this.context.moveTo( startWidth/2, 0 );
+    this.context.lineTo( -startWidth/2, 0 );
+    this.context.lineTo( -endWidth/2, length );
+    this.context.lineTo( endWidth/2, length );
+    this.context.lineTo( startWidth/2, 0 );
+    //this.context.stroke();
+    this.context.fill();
+
+    this.context.translate( 0, length );
+};
+
 Graphics.prototype.square = function( size, width, color )
 {
     this.context.save();
